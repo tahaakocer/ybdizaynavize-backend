@@ -1,6 +1,7 @@
-package com.tahaakocer.ybdizaynavize.model.product;
+package com.tahaakocer.ybdizaynavize.dto.product;
 
-import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,11 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "product_image")
-public class Image {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ImageDto {
     private Long id;
     private String imageUrl;
 }

@@ -22,5 +22,6 @@ public class AttributeValue {
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 
-    private String value;
+    @Column(name = "attribute_value")
+    private String attributeValue;
 }
