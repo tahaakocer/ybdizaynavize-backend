@@ -1,4 +1,4 @@
-package com.tahaakocer.ybdizaynavize.repository;
+package com.tahaakocer.ybdizaynavize.repository.product;
 
 import com.tahaakocer.ybdizaynavize.model.product.Image;
 import org.springframework.data.jpa.repository.JpaRepository;

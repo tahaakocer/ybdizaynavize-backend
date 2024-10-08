@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "attributevalue")
+@Table(name = "attributevalues")
 public class AttributeValue {
 
     @Id
