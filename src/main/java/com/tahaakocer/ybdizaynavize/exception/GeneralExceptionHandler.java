@@ -17,6 +17,19 @@ import java.util.Map;
 @Log4j2
 public class GeneralExceptionHandler {
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex,HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found Error")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     //========================VALIDATION EXCEPTIONS========================
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(
@@ -29,13 +42,13 @@ public class GeneralExceptionHandler {
 
         String errorMessage = errors.values().stream().findFirst().orElse("Validation error");
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now().toString(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Error",
-                errorMessage,
-                request.getRequestURI()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Validation Error")
+                .message(errorMessage)
+                .path(request.getRequestURI())
+                .build();
 
         log.error(errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -50,13 +63,13 @@ public class GeneralExceptionHandler {
                 errorMessage.append(constraintViolation.getMessage()).append("; ")
         );
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now().toString(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Constraint Violation",
-                errorMessage.toString(),
-                request.getRequestURI()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Constraint Violation Error")
+                .message(errorMessage.toString())
+                .path(request.getRequestURI())
+                .build();
 
         log.error(errorMessage.toString());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -68,13 +81,13 @@ public class GeneralExceptionHandler {
 
         String errorMessage = "Unique constraint violation: The value for a unique field already exists.";
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now().toString(),
-                HttpStatus.CONFLICT.value(),
-                "Data Integrity Violation",
-                errorMessage,
-                request.getRequestURI()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Data Integrity Violation Error")
+                .message(errorMessage)
+                .path(request.getRequestURI())
+                .build();
 
         log.error("Data integrity violation: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);

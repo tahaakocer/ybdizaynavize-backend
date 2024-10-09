@@ -1,10 +1,7 @@
 package com.tahaakocer.ybdizaynavize.model.product;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,9 +9,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "attributes")
+@Builder
 public class Attribute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
 }
