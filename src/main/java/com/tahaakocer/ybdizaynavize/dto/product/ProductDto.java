@@ -1,9 +1,6 @@
 package com.tahaakocer.ybdizaynavize.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.tahaakocer.ybdizaynavize.model.product.Brand;
-import com.tahaakocer.ybdizaynavize.model.product.Category;
-import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +19,11 @@ public class ProductDto {
     private Long id;
     private String name;
     private String description;
-    private Category category;
-    private Brand brand;
-    private List<Variant> variants;
+    private Long categoryId;
+    private CategoryDto category;
+    private Long brandId;
+    private BrandDto brand;
+    private List<VariantDto> variants;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }
