@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {VariantMapper.class})
 public interface ProductMapper {
     Product dtoToEntity(ProductDto productDto);
 

@@ -1,6 +1,7 @@
 package com.tahaakocer.ybdizaynavize.dto.product.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.model.product.Brand;
 import com.tahaakocer.ybdizaynavize.model.product.Category;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
@@ -24,6 +25,7 @@ public class ProductResponse{
     private String description;
     private Category category;
     private Brand brand;
+    private List<VariantProductDto> variants;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

@@ -115,4 +115,9 @@ public class ProductService implements IProductService {
        return this.productMapper.entityToDto(saved);
 
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return this.productRepository.existsById(id);
+    }
 }

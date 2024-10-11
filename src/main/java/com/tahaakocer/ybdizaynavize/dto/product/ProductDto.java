@@ -1,5 +1,6 @@
 package com.tahaakocer.ybdizaynavize.dto.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

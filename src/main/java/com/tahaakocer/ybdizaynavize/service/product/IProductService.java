@@ -12,4 +12,5 @@ public interface IProductService {
     Page<ProductDto> getAllByCategoryId(Long categoryId,int page, int size);
     Page<ProductDto> getAllByBrandId(Long brandId,int page, int size);
     ProductDto update(Long id, ProductDto productDto);
+    boolean existsById(Long id);
 }

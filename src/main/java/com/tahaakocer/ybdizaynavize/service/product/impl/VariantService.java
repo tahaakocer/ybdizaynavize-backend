@@ -3,6 +3,7 @@ package com.tahaakocer.ybdizaynavize.service.product.impl;
 import com.tahaakocer.ybdizaynavize.dto.product.AttributeValueDto;
 import com.tahaakocer.ybdizaynavize.dto.product.ProductDto;
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
+import com.tahaakocer.ybdizaynavize.exception.EntityNotFoundException;
 import com.tahaakocer.ybdizaynavize.mapper.product.ProductMapper;
 import com.tahaakocer.ybdizaynavize.mapper.product.VariantMapper;
 import com.tahaakocer.ybdizaynavize.model.product.Image;
@@ -14,6 +15,7 @@ import com.tahaakocer.ybdizaynavize.service.product.IProductService;
 import com.tahaakocer.ybdizaynavize.service.product.IVariantService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,44 +39,71 @@ public class VariantService implements IVariantService {
         this.attributeValueService = attributeValueService;
     }
 
+
     @Override
+    @Transactional
     public VariantDto create(VariantDto variantDto) {
         //Product
         ProductDto productDto = this.productService.getById(variantDto.getProductId());
-        if(productDto != null){
-            variantDto.setProduct(this.productMapper.dtoToVariantDto(productDto));
+        variantDto.setProduct(this.productMapper.dtoToVariantDto(productDto));
 
-            log.info("variantDto: " + variantDto);
-            //AttributeValues
-            List<AttributeValueDto> attributeValueDtoList = new ArrayList<>();
-            variantDto.getAttributeValueIds().forEach(attributeValueId -> {
-                AttributeValueDto attributeValue = this.attributeValueService.getById(attributeValueId);
-                attributeValueDtoList.add(attributeValue);
-            });
-            variantDto.setAttributeValues(attributeValueDtoList);
-            log.info("attributeValueDtoList: " + attributeValueDtoList);
+        log.info("variantDto: " + variantDto);
+        //AttributeValues
+        List<AttributeValueDto> attributeValueDtoList = new ArrayList<>();
+        variantDto.getAttributeValueIds().forEach(attributeValueId -> {
+            AttributeValueDto attributeValue = this.attributeValueService.getById(attributeValueId);
+            attributeValueDtoList.add(attributeValue);
+        });
+        variantDto.setAttributeValues(attributeValueDtoList);
+        log.info("attributeValueDtoList: " + attributeValueDtoList);
 
-            //Image
-            Variant variant = this.variantMapper.dtoToEntity(variantDto);
-            List<String> imageUrls = new ArrayList<>();
-            if(variantDto.getPhotoFiles() != null){
-                imageUrls = awsS3Service.saveMultipleImages(variantDto.getPhotoFiles());
-            }
-            List<Image> imageEntities = imageUrls.stream()
-                    .map(imageUrl -> {
-                        Image image = new Image();
-                        image.setImageUrl(imageUrl);
-                        return image;
-                    }).toList();
-
-            variant.setImages(imageEntities);
-            log.info("imageEntities: " + imageEntities);
-            //Save
-            Variant savedVariant = this.variantRepository.save(variant);
-
-            log.info("savedVariant: " + savedVariant);
-            return this.variantMapper.entityToDto(savedVariant);
+        //Image
+        Variant variant = this.variantMapper.dtoToEntity(variantDto);
+        List<String> imageUrls = new ArrayList<>();
+        if (variantDto.getPhotoFiles() != null) {
+            imageUrls = awsS3Service.saveMultipleImages(variantDto.getPhotoFiles());
         }
-       return null;
+        List<Image> imageEntities = imageUrls.stream()
+                .map(imageUrl -> {
+                    Image image = new Image();
+                    image.setImageUrl(imageUrl);
+                    return image;
+                }).toList();
+
+        variant.setImages(imageEntities);
+        log.info("imageEntities: " + imageEntities);
+        //Save
+        Variant savedVariant = this.variantRepository.save(variant);
+
+        log.info("savedVariant: " + savedVariant);
+        return this.variantMapper.entityToDto(savedVariant);
     }
+
+    @Override
+    public String delete(Long id) {
+        Variant variant = this.variantRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Variant not found with id: " + id)
+        );
+        this.variantRepository.delete(variant);
+        log.info("Variant deleted: {}", variant);
+        return "Variant deleted by id: " + id;
+    }
+
+    @Override
+    public List<VariantDto> getAll() {
+        List<Variant> list = this.variantRepository.findAll();
+        log.info("list: " + list);
+        return this.variantMapper.entityListToDtoList(list);
+    }
+
+    @Override
+    public VariantDto getById(Long id) {
+        Variant variant = this.variantRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Variant not found with id: " + id)
+        );
+        log.info("variant: " + variant);
+        return this.variantMapper.entityToDto(variant);
+    }
+
+
 }

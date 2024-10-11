@@ -1,10 +1,14 @@
 package com.tahaakocer.ybdizaynavize.mapper.product;
 
+import com.tahaakocer.ybdizaynavize.dto.product.ProductVariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.request.VariantRequest;
 import com.tahaakocer.ybdizaynavize.dto.product.response.VariantResponse;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface VariantMapper {
@@ -15,4 +19,8 @@ public interface VariantMapper {
     VariantDto requestToDto(VariantRequest variantRequest);
 
     VariantResponse dtoToResponse(VariantDto saved);
+    ProductVariantDto dtoToProductVariantDto(VariantDto variantDto);
+    ProductVariantDto entityToProductVariantDto(Variant variant);
+
+    List<VariantDto> entityListToDtoList(List<Variant> list);
 }

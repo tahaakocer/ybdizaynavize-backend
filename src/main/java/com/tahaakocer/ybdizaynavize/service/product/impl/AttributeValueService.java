@@ -53,8 +53,7 @@ public class AttributeValueService implements IAttributeValueService {
                 () -> new EntityNotFoundException("Attribute value not found with id: " + id)
         );
         log.info("Attribute value found: {}", attributeValue);
-        AttributeValueDto attributeValueDto = this.attributeValueMapper.entityToDto(attributeValue);
-        return attributeValueDto;
+        return this.attributeValueMapper.entityToDto(attributeValue);
     }
 
     @Override
