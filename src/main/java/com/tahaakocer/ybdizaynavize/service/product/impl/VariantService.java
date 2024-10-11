@@ -105,5 +105,16 @@ public class VariantService implements IVariantService {
         return this.variantMapper.entityToDto(variant);
     }
 
+    @Override
+    public VariantDto update(Long id, VariantDto variantDto) {
+        return null;
+    }
 
+    @Override
+    public List<VariantDto> getByProductId(Long id) {
+       List<VariantDto> list = this.variantMapper.entityListToDtoList(this.variantRepository.findAllByProductId(id));
+       log.info("list: " + list);
+       return list;
+
+    }
 }

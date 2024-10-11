@@ -39,6 +39,12 @@ public class VariantController {
         return ResponseEntity.ok(variantMapper.dtoToResponse(this.variantService.getById(id)));
     }
 
+//    TODO HER VARİANTTA TEKRAR PRODUCT GETİRMESİNE GEREK YOK, YENİ RESPONSE OLUŞTUR
+    @GetMapping("/get-by-product-id")
+    public ResponseEntity<List<VariantResponse>> getByProductId(@RequestParam Long id){
+        return ResponseEntity.ok(this.variantService.getByProductId(id).stream().map(variantMapper::dtoToResponse).toList());
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@RequestParam Long id){
         return ResponseEntity.ok(this.variantService.delete(id));
