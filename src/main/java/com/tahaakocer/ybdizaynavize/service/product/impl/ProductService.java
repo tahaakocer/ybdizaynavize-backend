@@ -3,9 +3,8 @@ package com.tahaakocer.ybdizaynavize.service.product.impl;
 import com.tahaakocer.ybdizaynavize.dto.product.BrandDto;
 import com.tahaakocer.ybdizaynavize.dto.product.CategoryDto;
 import com.tahaakocer.ybdizaynavize.dto.product.ProductDto;
+import com.tahaakocer.ybdizaynavize.exception.EntityNotFoundException;
 import com.tahaakocer.ybdizaynavize.mapper.product.ProductMapper;
-import com.tahaakocer.ybdizaynavize.model.product.Brand;
-import com.tahaakocer.ybdizaynavize.model.product.Category;
 import com.tahaakocer.ybdizaynavize.model.product.Product;
 import com.tahaakocer.ybdizaynavize.repository.product.ProductRepository;
 import com.tahaakocer.ybdizaynavize.service.product.IProductService;
@@ -48,13 +47,18 @@ public class ProductService implements IProductService {
 
     @Override
     public String delete(Long id) {
-        return "";
+        Product product = this.productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Product not found with id: " + id)
+        );
+        this.productRepository.delete(product);
+        log.info("Product deleted: {}", product);
+        return "Product deleted by id: " + id;
     }
 
     @Override
     public ProductDto getById(Long id) {
         Product product = this.productRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Product not found with id: " + id)
+                () -> new EntityNotFoundException("Product not found with id: " + id)
         );
         log.info("Product found: {}", product);
         return this.productMapper.entityToDto(product);
@@ -95,7 +99,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto update(Long id, ProductDto productDto) {
         Product product = this.productRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Product not found with id: " + id)
+                () -> new EntityNotFoundException("Product not found with id: " + id)
         );
        BrandDto brandDto = this.brandService.getById(productDto.getBrandId());
        CategoryDto categoryDto = this.categoryService.getById(productDto.getCategoryId());

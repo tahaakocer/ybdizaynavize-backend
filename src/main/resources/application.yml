@@ -1,6 +1,8 @@
 spring:
   application:
     name: ybdizaynavize
+  config:
+    import: optional:file:.env[.properties]
   jpa:
     properties:
       hibernate:
@@ -9,10 +11,20 @@ spring:
       ddl-auto: update
       show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/ybdizaynavize_db?useSSL=false&serverTimezone=UTC
-    username: root
-    password: 123456
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+aws:
+  s3:
+    access:
+      key: ${AWS_ACCESS_KEY}
+    secret:
+      key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION}
+    bucket:
+      name: ${AWS_S3_BUCKET_NAME}
 logging:
   file:
     path: logs/
     name: ybdizaynavize.log
+

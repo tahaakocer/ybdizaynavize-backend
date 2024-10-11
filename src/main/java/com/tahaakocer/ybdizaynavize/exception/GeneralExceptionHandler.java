@@ -1,5 +1,7 @@
 package com.tahaakocer.ybdizaynavize.exception;
 
+import com.tahaakocer.ybdizaynavize.exception.product.S3UploadImageException;
+import com.tahaakocer.ybdizaynavize.service.product.S3DeleteImageException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +25,30 @@ public class GeneralExceptionHandler {
                 .timestamp(LocalDateTime.now().toString())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Not Found Error")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    @ExceptionHandler(S3UploadImageException.class)
+    public ResponseEntity<ErrorResponse> handleS3UploadImageException(S3UploadImageException ex,HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("S3 Upload Image Error")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    @ExceptionHandler(S3DeleteImageException.class)
+    public ResponseEntity<ErrorResponse> handleS3DeleteImageException(S3DeleteImageException ex,HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("S3 Delete Image Error")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();

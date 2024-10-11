@@ -26,7 +26,7 @@ public class Variant {
     @JoinColumn(name = "product_id")
     private Product product;
 
-//    TODO bunu otomatik oluşturmak lazım
+//    TODO bunu otomatik oluşturmak lazım (unique olmalı)
     private String sku;
 
     @ManyToMany

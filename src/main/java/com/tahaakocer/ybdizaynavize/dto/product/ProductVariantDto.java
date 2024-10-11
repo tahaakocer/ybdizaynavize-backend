@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,19 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
-public class VariantDto {
+public class ProductVariantDto {
     private Long id;
-    private Long productId;
-    private ProductVariantDto product;
-    private List<AttributeValueDto> attributeValues;
-    private List<Long> attributeValueIds;
-    private String sku;
-    private Double price;
-    private Double discountedPrice;
-    private Integer stock;
-    private MultipartFile [] photoFiles;
-    private List<ImageDto> images;
+    private String name;
+    private String description;
+    private Long categoryId;
+    private CategoryDto category;
+    private Long brandId;
+    private BrandDto brand;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }
