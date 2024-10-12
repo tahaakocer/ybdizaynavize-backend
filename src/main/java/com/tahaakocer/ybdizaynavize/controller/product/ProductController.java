@@ -71,11 +71,12 @@ public class ProductController {
     }
 
     @GetMapping("/filter-products-by-attribute-values")
-    public ResponseEntity<Page<ProductResponse>> filterProductsByAttributeValues(@RequestParam List<String> attributeValues,
+    public ResponseEntity<Page<ProductResponse>> filterProductsByAttributeValues(@RequestParam List<Integer> attributeValues,
                                                                                  @RequestParam(defaultValue = "0") int page,
                                                                                  @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(
-                this.productService.filterProductsByAttributeValues(attributeValues, page, size).map(this.productMapper::dtoToResponse)
+                this.productService.filterProductsByAttributeValues(attributeValues, page, size)
+                        .map(this.productMapper::dtoToResponse)
         );
     }
 }

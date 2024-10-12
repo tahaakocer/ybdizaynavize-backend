@@ -46,6 +46,12 @@ public class VariantController {
                 this.variantService.getByProductId(id).stream().map(variantMapper::dtoToVariantByIdResponse).toList()
         );
     }
+    @GetMapping("/filter-products-by-attribute-values")
+    public ResponseEntity<List<VariantByIdResponse>> filterProductsByAttributeValues(@RequestParam List<Integer> attributeValues){
+        return ResponseEntity.ok(
+                this.variantService.filterProductsByAttributeValues(attributeValues).stream().map(variantMapper::dtoToVariantByIdResponse).toList()
+        );
+    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@RequestParam Long id){

@@ -11,4 +11,5 @@ public interface IVariantService {
     VariantDto getById(Long id);
     VariantDto update(Long id, VariantDto variantDto);
     List<VariantDto> getByProductId(Long id);
+    List<VariantDto> filterProductsByAttributeValues(List<Integer> attributeValues);
 }

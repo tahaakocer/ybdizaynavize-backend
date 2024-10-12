@@ -106,7 +106,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductDto> filterProductsByAttributeValues(List<String> attributeValues, int page, int size) {
+    public Page<ProductDto> filterProductsByAttributeValues(List<Integer> attributeValues, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> products = this.productRepository.findAll(ProductSpecification.hasAttributeValue(attributeValues), pageable);
         log.info("Products found: {}", products);

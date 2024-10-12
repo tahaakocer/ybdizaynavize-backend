@@ -9,6 +9,7 @@ import com.tahaakocer.ybdizaynavize.mapper.product.VariantMapper;
 import com.tahaakocer.ybdizaynavize.model.product.Image;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import com.tahaakocer.ybdizaynavize.repository.product.VariantRepository;
+import com.tahaakocer.ybdizaynavize.repository.product.specifications.VariantSpecification;
 import com.tahaakocer.ybdizaynavize.service.product.AwsS3Service;
 import com.tahaakocer.ybdizaynavize.service.product.IAttributeValueService;
 import com.tahaakocer.ybdizaynavize.service.product.IProductService;
@@ -117,4 +118,11 @@ public class VariantService implements IVariantService {
        return list;
 
     }
+
+    @Override
+    public List<VariantDto> filterProductsByAttributeValues(List<Integer> attributeValues) {
+        List<Variant> variants = this.variantRepository.findAll(VariantSpecification.hasAttributeValue(attributeValues));
+        return this.variantMapper.entityListToDtoList(variants);
+    }
+
 }
