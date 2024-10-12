@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,12 @@ public class ProductService implements IProductService {
         this.categoryService = categoryService;
 
         this.brandService = brandService;
+    }
+
+    private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortBy);
+        sort = sortDirection.equalsIgnoreCase("asc") ? sort.ascending() : sort.descending();
+        return PageRequest.of(page, size, sort);
     }
 
     @Override
@@ -68,18 +75,28 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductDto> getAll(int page, int size) {
+    public Page<ProductDto> getAll(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> products = this.productRepository.findAll(pageable);
+        Page<Product> products;
+
+        if ("discountedPrice".equalsIgnoreCase(sortBy)) {
+            products = sortDirection.equalsIgnoreCase("asc")
+                    ? productRepository.findAllOrderByVariantPriceAsc(pageable)
+                    : productRepository.findAllOrderByVariantPriceDesc(pageable);
+        } else {
+            pageable = createPageable(page, size, sortBy, sortDirection);
+            products = productRepository.findAll(pageable);
+        }
+
         log.info("Products found: {}", products);
         return products.map(this.productMapper::entityToDto);
     }
 
     @Override
-    public Page<ProductDto> getAllByCategoryId(Long categoryId, int page, int size ) {
+    public Page<ProductDto> getAllByCategoryId(Long categoryId, int page, int size, String sortBy, String sortDirection) {
         CategoryDto category = this.categoryService.getById(categoryId);
         if(category != null){
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = createPageable(page,size,sortBy,sortDirection);
             Page<Product> products = this.productRepository.findAllByCategoryId(categoryId, pageable);
             log.info("Products found: {}", products);
             return products.map(this.productMapper::entityToDto);
@@ -88,10 +105,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductDto> getAllByBrandId(Long brandId, int page, int size) {
+    public Page<ProductDto> getAllByBrandId(Long brandId, int page, int size, String sortBy, String sortDirection) {
         BrandDto brand = this.brandService.getById(brandId);
         if(brand != null){
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = createPageable(page,size,sortBy,sortDirection);
             Page<Product> products = this.productRepository.findAllByBrandId(brandId, pageable);
             log.info("Products found: {}", products);
             return products.map(this.productMapper::entityToDto);
@@ -100,18 +117,31 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductDto> getAllByCategoryIdAndBrandId(Long categoryId, Long brandId, int page, int size) {
+    public Page<ProductDto> getAllByCategoryIdAndBrandId(Long categoryId, Long brandId, int page, int size, String sortBy, String sortDirection) {
 //        TODO "Implement getAllByCategoryIdAndBrandId method"
         return null;
     }
 
     @Override
-    public Page<ProductDto> filterProductsByAttributeValues(List<Integer> attributeValues, int page, int size) {
+    public Page<ProductDto> filterProductsByAttributeValues(List<Integer> attributeValues, int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> products = this.productRepository.findAll(ProductSpecification.hasAttributeValue(attributeValues), pageable);
-        log.info("Products found: {}", products);
+        Page<Product> products;
+
+        if ("discountedPrice".equalsIgnoreCase(sortBy)) {
+            // Variant fiyatına göre sıralama
+            products = sortDirection.equalsIgnoreCase("asc")
+                    ? productRepository.findAllByAttributesOrderByVariantDiscountedPriceAsc(attributeValues, pageable)
+                    : productRepository.findAllByAttributesOrderByVariantDiscountedPriceDesc(attributeValues, pageable);
+        } else {
+            // Diğer alanlara göre sıralama
+            pageable = createPageable(page, size, sortBy, sortDirection);
+            products = productRepository.findAll(ProductSpecification.hasAttributeValue(attributeValues), pageable);
+        }
+
+        log.info("Filtered products found: {}", products);
         return products.map(this.productMapper::entityToDto);
     }
+
 
     @Override
     public ProductDto update(Long id, ProductDto productDto) {

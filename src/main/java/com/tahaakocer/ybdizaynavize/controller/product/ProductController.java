@@ -30,9 +30,15 @@ public class ProductController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<Page<ProductResponse>> getAll(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(this.productService.getAll(page, size).map(this.productMapper::dtoToResponse));
+    public ResponseEntity<Page<ProductResponse>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+        return ResponseEntity.ok(
+                this.productService.getAll(page, size, sortBy, sortDirection)
+                        .map(this.productMapper::dtoToResponse)
+        );
     }
 
     @GetMapping("/get-by-id")
@@ -53,29 +59,40 @@ public class ProductController {
     }
 
     @GetMapping("/get-by-category-id")
-    public ResponseEntity<Page<ProductResponse>> getAllByCategoryId(@RequestParam Long categoryId,
-                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProductResponse>> getAllByCategoryId(
+            @RequestParam Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
         return ResponseEntity.ok(
-                this.productService.getAllByCategoryId(categoryId, page, size).map(this.productMapper::dtoToResponse)
+                this.productService.getAllByCategoryId(categoryId, page, size, sortBy, sortDirection)
+                        .map(this.productMapper::dtoToResponse)
         );
     }
 
     @GetMapping("/get-by-brand-id")
-    public ResponseEntity<Page<ProductResponse>> getAllByBrandId(@RequestParam Long brandId,
-                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProductResponse>> getAllByBrandId(
+            @RequestParam Long brandId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
         return ResponseEntity.ok(
-                this.productService.getAllByBrandId(brandId, page, size).map(this.productMapper::dtoToResponse)
+                this.productService.getAllByBrandId(brandId, page, size, sortBy, sortDirection)
+                        .map(this.productMapper::dtoToResponse)
         );
     }
 
     @GetMapping("/filter-products-by-attribute-values")
-    public ResponseEntity<Page<ProductResponse>> filterProductsByAttributeValues(@RequestParam List<Integer> attributeValues,
-                                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                                 @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProductResponse>> filterProductsByAttributeValues(
+            @RequestParam List<Integer> attributeValues,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
         return ResponseEntity.ok(
-                this.productService.filterProductsByAttributeValues(attributeValues, page, size)
+                this.productService.filterProductsByAttributeValues(attributeValues, page, size, sortBy, sortDirection)
                         .map(this.productMapper::dtoToResponse)
         );
     }

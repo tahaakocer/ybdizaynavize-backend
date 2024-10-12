@@ -15,6 +15,10 @@ import com.tahaakocer.ybdizaynavize.service.product.IAttributeValueService;
 import com.tahaakocer.ybdizaynavize.service.product.IProductService;
 import com.tahaakocer.ybdizaynavize.service.product.IVariantService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +44,11 @@ public class VariantService implements IVariantService {
         this.attributeValueService = attributeValueService;
     }
 
+    private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(sortBy);
+        sort = sortDirection.equalsIgnoreCase("asc") ? sort.ascending() : sort.descending();
+        return PageRequest.of(page, size, sort);
+    }
 
     @Override
     @Transactional
@@ -107,7 +116,9 @@ public class VariantService implements IVariantService {
     }
 
     @Override
+    @Transactional
     public VariantDto update(Long id, VariantDto variantDto) {
+
         return null;
     }
 
@@ -120,9 +131,25 @@ public class VariantService implements IVariantService {
     }
 
     @Override
-    public List<VariantDto> filterProductsByAttributeValues(List<Integer> attributeValues) {
+    public List<VariantDto> filterVariantsByAttributeValues(List<Integer> attributeValues) {
         List<Variant> variants = this.variantRepository.findAll(VariantSpecification.hasAttributeValue(attributeValues));
         return this.variantMapper.entityListToDtoList(variants);
+    }
+
+    @Override
+    public Page<VariantDto> filterVariantsByAttributeValues(List<Integer> attributeValues, int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = createPageable(page,size,sortBy,sortDirection);
+        Page<Variant> variants = this.variantRepository.findAll(VariantSpecification.hasAttributeValue(attributeValues), pageable);
+        log.info("variants: " + variants);
+        return variants.map(this.variantMapper::entityToDto);
+    }
+
+    @Override
+    public Page<VariantDto> getAll(int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = createPageable(page, size, sortBy, sortDirection);
+        Page<Variant> variants = this.variantRepository.findAll(pageable);
+        log.info("variants: " + variants);
+        return variants.map(this.variantMapper::entityToDto);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tahaakocer.ybdizaynavize.repository.product;
 
-import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
