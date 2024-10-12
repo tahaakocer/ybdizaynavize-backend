@@ -7,12 +7,15 @@ import com.tahaakocer.ybdizaynavize.exception.EntityNotFoundException;
 import com.tahaakocer.ybdizaynavize.mapper.product.ProductMapper;
 import com.tahaakocer.ybdizaynavize.model.product.Product;
 import com.tahaakocer.ybdizaynavize.repository.product.ProductRepository;
+import com.tahaakocer.ybdizaynavize.repository.product.specifications.ProductSpecification;
 import com.tahaakocer.ybdizaynavize.service.product.IProductService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Log4j2
@@ -94,6 +97,20 @@ public class ProductService implements IProductService {
             return products.map(this.productMapper::entityToDto);
         }
        return null;
+    }
+
+    @Override
+    public Page<ProductDto> getAllByCategoryIdAndBrandId(Long categoryId, Long brandId, int page, int size) {
+//        TODO "Implement getAllByCategoryIdAndBrandId method"
+        return null;
+    }
+
+    @Override
+    public Page<ProductDto> filterProductsByAttributeValues(List<String> attributeValues, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> products = this.productRepository.findAll(ProductSpecification.hasAttributeValue(attributeValues), pageable);
+        log.info("Products found: {}", products);
+        return products.map(this.productMapper::entityToDto);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tahaakocer.ybdizaynavize.mapper.product;
 import com.tahaakocer.ybdizaynavize.dto.product.ProductVariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.request.VariantRequest;
+import com.tahaakocer.ybdizaynavize.dto.product.response.VariantByIdResponse;
 import com.tahaakocer.ybdizaynavize.dto.product.response.VariantResponse;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import org.mapstruct.Mapper;
@@ -23,4 +24,6 @@ public interface VariantMapper {
     ProductVariantDto entityToProductVariantDto(Variant variant);
 
     List<VariantDto> entityListToDtoList(List<Variant> list);
+
+    VariantByIdResponse dtoToVariantByIdResponse(VariantDto variantDto);
 }

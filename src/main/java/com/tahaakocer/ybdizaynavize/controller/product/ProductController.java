@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
@@ -46,25 +48,37 @@ public class ProductController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductResponse> update(@PathVariable Long id, ProductRequest productRequest) {
         ProductDto productDto = this.productMapper.requestToDto(productRequest);
-        ProductDto updated = this.productService.update(id , productDto);
+        ProductDto updated = this.productService.update(id, productDto);
         return ResponseEntity.ok(this.productMapper.dtoToResponse(updated));
     }
+
     @GetMapping("/get-by-category-id")
     public ResponseEntity<Page<ProductResponse>> getAllByCategoryId(@RequestParam Long categoryId,
                                                                     @RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "10") int size) {
-       return ResponseEntity.ok(
-           this.productService.getAllByCategoryId(categoryId, page, size).map(this.productMapper::dtoToResponse)
-       );
+        return ResponseEntity.ok(
+                this.productService.getAllByCategoryId(categoryId, page, size).map(this.productMapper::dtoToResponse)
+        );
     }
+
     @GetMapping("/get-by-brand-id")
     public ResponseEntity<Page<ProductResponse>> getAllByBrandId(@RequestParam Long brandId,
-                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size) {
+                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(
                 this.productService.getAllByBrandId(brandId, page, size).map(this.productMapper::dtoToResponse)
         );
     }
+
+    @GetMapping("/filter-products-by-attribute-values")
+    public ResponseEntity<Page<ProductResponse>> filterProductsByAttributeValues(@RequestParam List<String> attributeValues,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+                this.productService.filterProductsByAttributeValues(attributeValues, page, size).map(this.productMapper::dtoToResponse)
+        );
+    }
 }
+
 
 

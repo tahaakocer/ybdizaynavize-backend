@@ -2,6 +2,7 @@ package com.tahaakocer.ybdizaynavize.controller.product;
 
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.request.VariantRequest;
+import com.tahaakocer.ybdizaynavize.dto.product.response.VariantByIdResponse;
 import com.tahaakocer.ybdizaynavize.dto.product.response.VariantResponse;
 import com.tahaakocer.ybdizaynavize.mapper.product.VariantMapper;
 import com.tahaakocer.ybdizaynavize.service.product.IVariantService;
@@ -39,10 +40,11 @@ public class VariantController {
         return ResponseEntity.ok(variantMapper.dtoToResponse(this.variantService.getById(id)));
     }
 
-//    TODO HER VARİANTTA TEKRAR PRODUCT GETİRMESİNE GEREK YOK, YENİ RESPONSE OLUŞTUR
     @GetMapping("/get-by-product-id")
-    public ResponseEntity<List<VariantResponse>> getByProductId(@RequestParam Long id){
-        return ResponseEntity.ok(this.variantService.getByProductId(id).stream().map(variantMapper::dtoToResponse).toList());
+    public ResponseEntity<List<VariantByIdResponse>> getByProductId(@RequestParam Long id){
+        return ResponseEntity.ok(
+                this.variantService.getByProductId(id).stream().map(variantMapper::dtoToVariantByIdResponse).toList()
+        );
     }
 
     @DeleteMapping("/delete")
