@@ -4,9 +4,12 @@ import com.tahaakocer.ybdizaynavize.dto.product.AttributeValueDto;
 import com.tahaakocer.ybdizaynavize.dto.product.ProductDto;
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.exception.EntityNotFoundException;
+import com.tahaakocer.ybdizaynavize.mapper.product.AttributeValueMapper;
 import com.tahaakocer.ybdizaynavize.mapper.product.ProductMapper;
 import com.tahaakocer.ybdizaynavize.mapper.product.VariantMapper;
+import com.tahaakocer.ybdizaynavize.model.product.AttributeValue;
 import com.tahaakocer.ybdizaynavize.model.product.Image;
+import com.tahaakocer.ybdizaynavize.model.product.Product;
 import com.tahaakocer.ybdizaynavize.model.product.Variant;
 import com.tahaakocer.ybdizaynavize.repository.product.VariantRepository;
 import com.tahaakocer.ybdizaynavize.repository.product.specifications.VariantSpecification;
@@ -34,14 +37,22 @@ public class VariantService implements IVariantService {
     private final IProductService productService;
     private final ProductMapper productMapper;
     private final IAttributeValueService attributeValueService;
+    private final AttributeValueMapper attributeValueMapper;
 
-    public VariantService(VariantRepository variantRepository, VariantMapper variantMapper, AwsS3Service awsS3Service, IProductService productService, ProductMapper productMapper, IAttributeValueService attributeValueService) {
+    public VariantService(VariantRepository variantRepository,
+                          VariantMapper variantMapper,
+                          AwsS3Service awsS3Service,
+                          IProductService productService,
+                          ProductMapper productMapper,
+                          IAttributeValueService attributeValueService,
+                          AttributeValueMapper attributeValueMapper) {
         this.variantRepository = variantRepository;
         this.variantMapper = variantMapper;
         this.awsS3Service = awsS3Service;
         this.productService = productService;
         this.productMapper = productMapper;
         this.attributeValueService = attributeValueService;
+        this.attributeValueMapper = attributeValueMapper;
     }
 
     private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
@@ -118,8 +129,27 @@ public class VariantService implements IVariantService {
     @Override
     @Transactional
     public VariantDto update(Long id, VariantDto variantDto) {
+        Variant variant = this.variantRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Variant not found with id: " + id)
+        );
+        variant.setPrice(variantDto.getPrice());
+        variant.setDiscountedPrice(variantDto.getDiscountedPrice());
+        variant.setStock(variantDto.getStock());
+        List<AttributeValueDto> attributeValueDtoList = new ArrayList<>();
+        variantDto.getAttributeValueIds().forEach(attributeValueId -> {
+            AttributeValueDto attributeValue = this.attributeValueService.getById(attributeValueId);
+            attributeValue.setId(attributeValueId);
+            attributeValueDtoList.add(attributeValue);
 
-        return null;
+        });
+        List<AttributeValue> updatedAttributeValues = attributeValueDtoList.stream()
+                .map(this.attributeValueMapper::dtoToEntity)
+                .toList();
+        variant.setAttributeValues(new ArrayList<>(updatedAttributeValues));
+        //TODO fotoğraf güncelleme eklenebilir
+        Variant saved = this.variantRepository.save(variant);
+        log.info("variant: " + variant);
+        return this.variantMapper.entityToDto(saved);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Product {
     @NotNull(message = "brand is required")
     private Brand brand;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<Variant> variants = new ArrayList<>();
 
     private LocalDateTime createdDate;

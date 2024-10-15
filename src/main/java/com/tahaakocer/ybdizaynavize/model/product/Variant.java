@@ -27,6 +27,7 @@ public class Variant {
     private Product product;
 
 //    TODO bunu otomatik oluşturmak lazım (unique olmalı)
+    @Column(unique = true)
     private String sku;
 
     @ManyToMany
@@ -54,11 +55,20 @@ public class Variant {
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
+        if (this.sku == null || this.sku.isEmpty()) {
+            this.sku = generateSku();
+        }
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedDate = LocalDateTime.now();
     }
-
+    private String generateSku() {
+        String productName = this.product != null ? this.product.getName().substring(0, 3).toUpperCase() : "DEF";
+        String attributeInfo = this.attributeValues.stream()
+                .map(attr -> attr.getAttributeValue().substring(0, 2).toUpperCase())
+                .reduce("", String::concat);
+        return productName + "-" + attributeInfo + "-" + System.currentTimeMillis();
+    }
 }

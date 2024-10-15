@@ -2,6 +2,7 @@ package com.tahaakocer.ybdizaynavize.controller.product;
 
 import com.tahaakocer.ybdizaynavize.dto.product.VariantDto;
 import com.tahaakocer.ybdizaynavize.dto.product.request.VariantRequest;
+import com.tahaakocer.ybdizaynavize.dto.product.request.VariantUpdateRequest;
 import com.tahaakocer.ybdizaynavize.dto.product.response.VariantByIdResponse;
 import com.tahaakocer.ybdizaynavize.dto.product.response.VariantResponse;
 import com.tahaakocer.ybdizaynavize.mapper.product.VariantMapper;
@@ -88,5 +89,10 @@ public class VariantController {
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@RequestParam Long id) {
         return ResponseEntity.ok(this.variantService.delete(id));
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<VariantResponse> update(@PathVariable Long id, VariantUpdateRequest variantUpdateRequest) {
+        VariantDto variantDto = variantMapper.updateRequestToDto(variantUpdateRequest);
+        return ResponseEntity.ok(variantMapper.dtoToResponse(this.variantService.update(id, variantDto)));
     }
 }
